@@ -122,6 +122,18 @@ const developerInstructions = [
   "Sample 3 (Category 3: Educational Program): \"Coursera - Introduction to Business\" -> Scores: 継続性:5, 人間性・社会性:3, メジャー関連:5, 自主性:3, その他(新しさ等):5",
   "Sample 4 (Category 4: Award): \"Dean's List\" -> Scores: 難易度・凄さ:4, 社会的認知度:4, メジャー関連:5, その他(新しさなど):2",
   "Sample 5 (Category 5: Extracurricular): \"The International Students' Association - President\" -> Scores: 継続性:4, 人間性・社会性:5, メジャー関連:5, リーダーシップ・自主性:4, その他:4",
+  "INTENDED MAJOR USAGE (MANDATORY):",
+  "- The student's intended major is provided as `major` in the input JSON.",
+  "- You MUST use `major` when assigning the `major_fit` score.",
+  "- Do not guess a different major; use exactly the provided `major`.",
+  "MAJOR_FIT SCORING RUBRIC (1-5):",
+  "5 = Direct, explicit alignment with the major’s core subject matter and skills; clear academic/professional preparation.",
+  "4 = Strong alignment; builds major-relevant skills or domain knowledge with clear connection.",
+  "3 = Indirect alignment; mostly transferable skills that still support the major (e.g., leadership, communication, basic research habits).",
+  "2 = Weak alignment; connection is minor or speculative.",
+  "1 = No meaningful alignment with the major based on the provided fields.",
+  "MAJOR_FIT COMMENT REQUIREMENT:",
+  "- In the single-cell `comment`, include a brief rationale for the major_fit score (1 short clause).",
 ].join("\n");
 
 
