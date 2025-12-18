@@ -89,7 +89,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    // ★ここが変更点：text/instruction ではなく構造化入力
     const { category, major, fields } = req.body || {};
 
     const cat = Number(category);
@@ -108,15 +107,23 @@ export default async function handler(req, res) {
       return res.status(500).json({ ok: false, error: "API key not configured" });
     }
 
-    const developerInstructions = [
-      "You are an expert American University Admissions Consultant.",
-      "Return the analysis in JAPANESE.",
-      "Ground your analysis ONLY in the provided input fields. Do not invent facts.",
-      "No activity counter.",
-      "Return ONLY valid JSON that matches the provided JSON schema.",
-      "If you add an example not stated, wrap it as _**inferred text**_.",
-      "comment must be ONE concise Japanese string suitable for writing into a spreadsheet cell."
-    ].join("\n");
+const developerInstructions = [
+  "You are an expert American University Admissions Consultant.",
+  "Return the analysis in JAPANESE.",
+  "Ground your analysis ONLY in the provided input fields. Do not invent facts.",
+  "Return ONLY valid JSON that matches the provided JSON schema.",
+  "If you add an example not stated, wrap it as _**inferred text**_.",
+  "comment must be ONE concise Japanese string suitable for writing into a spreadsheet cell.",
+  "SCORING CALIBRATION (FEW-SHOT EXEMPLARS):",
+  "- Use the following exemplars as your primary guide for scoring calibration (1-5).",
+  "- Your scores must be consistent in scale and severity with these examples.",
+  "Sample 1 (Category 1: Volunteer): \"Cards of Hope\" -> Scores: 継続性:2, 人間性・社会性:4, メジャー関連:2, 自主性:4, その他(新しさ等):4",
+  "Sample 2 (Category 2: Work Experience): \"XX College - Teaching Assistant\" -> Scores: 継続性:2, 人間性・社会性:4, メジャー関連:4, 自主性:4, その他(新しさ等):5",
+  "Sample 3 (Category 3: Educational Program): \"Coursera - Introduction to Business\" -> Scores: 継続性:5, 人間性・社会性:3, メジャー関連:5, 自主性:3, その他(新しさ等):5",
+  "Sample 4 (Category 4: Award): \"Dean's List\" -> Scores: 難易度・凄さ:4, 社会的認知度:4, メジャー関連:5, その他(新しさなど):2",
+  "Sample 5 (Category 5: Extracurricular): \"The International Students' Association - President\" -> Scores: 継続性:4, 人間性・社会性:5, メジャー関連:5, リーダーシップ・自主性:4, その他:4",
+].join("\n");
+
 
     const schema = schemaForCategory(cat);
 
