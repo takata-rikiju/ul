@@ -45,6 +45,33 @@ function schemaForCategory(category) {
   };
 }
 
+function extractOutputText(data) {
+  // 1) SDK等で output_text がある場合
+  if (typeof data.output_text === "string" && data.output_text.trim()) {
+    return data.output_text.trim();
+  }
+
+  // 2) RESTの一般形：output[].content[].text を走査
+  if (Array.isArray(data.output)) {
+    const texts = [];
+    for (const item of data.output) {
+      if (!item || !Array.isArray(item.content)) continue;
+      for (const c of item.content) {
+        if (c && typeof c.text === "string") texts.push(c.text);
+      }
+    }
+    const joined = texts.join("\n").trim();
+    if (joined) return joined;
+  }
+
+  // 3) 念のためのフォールバック
+  if (typeof data.text === "string" && data.text.trim()) {
+    return data.text.trim();
+  }
+
+  return "";
+}
+
 async function callOpenAIResponses({ apiKey, model, developerInstructions, userInput, schema }) {
   const r = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
@@ -70,18 +97,26 @@ async function callOpenAIResponses({ apiKey, model, developerInstructions, userI
   });
 
   const data = await r.json();
+
   if (!r.ok) {
+    // ここでOpenAI側のエラー内容が分かるようにそのまま返す
     throw new Error(`OpenAI API error: ${JSON.stringify(data)}`);
   }
 
-  // Responses API: output_text が便利（無い場合は data.output から拾う実装にする）
-  const outText = data.output_text || "";
+  const outText = extractOutputText(data);
   if (!outText) {
-    throw new Error("Empty output_text from OpenAI");
+    // デバッグしやすいように生レスポンスを含める
+    throw new Error("Empty text output from OpenAI: " + JSON.stringify(data));
   }
 
-  return JSON.parse(outText);
+  try {
+    return JSON.parse(outText);
+  } catch (e) {
+    // JSON Schema strictでも、万一のときに原因を見える化
+    throw new Error("Model output was not valid JSON. outText=" + outText);
+  }
 }
+
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
