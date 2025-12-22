@@ -181,8 +181,6 @@ const developerInstructions = [
   "3 = Indirect alignment; mostly transferable skills that still support the major (e.g., leadership, communication, basic research habits).",
   "2 = Weak alignment; connection is minor or speculative.",
   "1 = No meaningful alignment with the major based on the provided fields.",
-  "MAJOR_FIT COMMENT REQUIREMENT:",
-  "- In the single-cell `comment`, include a brief rationale for the major_fit score (1 short clause).",
 ].join("\n");
 
 
